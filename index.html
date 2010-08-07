@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">                                                  
+  <title>HTML5/CSS3 Charts</title>
+  <meta name="description" content="Generate Accessible HTML5 Charts">
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/barchart.css">
+</head>
+<body> 
+	<hgroup><h1>Accessible HTML Bar Chart</h1>
+	<b>Table converted into a bar chart! Edit the data, and copy the CSS &amp; HTML</b><a href="#" id="addbar">Add a Bar</a></hgroup>    
+ <table class="bar-chart">  
+	<thead>
+		<tr><th><b contenteditable=true>CEOs</th><th><b contenteditable=true>Payout Package (in millions)</th></tr>   
+	</thead>
+  <tbody>                                   
+	<tr class=ratio-4>
+		<td><b contenteditable=true>140</td><td><b contenteditable=true>Michael Ovitz (Disney)</td>
+	</tr>             
+	<tr class=ratio-2>
+		<td><b contenteditable=true>88</td><td><b contenteditable=true>Percy Barnevik (Asea Brown)</b></td>
+	</tr>     
+	<tr class=ratio-0>
+		<td><b contenteditable=true>11</td>
+		<td><b contenteditable=true>Jack Welch (GE)</b></td>
+	</tr>      
+	<tr class=ratio-4>
+		<td><b contenteditable=true>165</td>
+		<td><b contenteditable=true>James Kilts (Gillette)</td>
+	</tr>
+	<tr class=ratio-10>
+		<td><b contenteditable=true>400</td>    
+		<td><b contenteditable=true>Lee Raymond (Exxon Mobil)</td>
+	</tr>                 
+	<tr class=ratio-5>
+		<td><b contenteditable=true>210</td>
+		<td><b contenteditable=true>Robert Nardelli (Home Depot)</td>
+	</tr>
+	<tr class=ratio-4>
+		<td><b contenteditable=true>158</td>
+		<td><b contenteditable=true>Edward Whitacre (AT&amp;T)</td>
+	</tr> 
+	<tr class=ratio-4>
+		<td><b contenteditable=true>162</b></td>
+		<td><b contenteditable=true>Stan O'Neal (Merrill Lynch)</td>
+	</tr>
+	<tr class=ratio-1>
+		<td><b contenteditable=true>42</td>
+		<td><b contenteditable=true>Charles Prince (Citigroup)</td>
+	</tr>
+	<tr class=ratio-0>
+		<td><b contenteditable=true>24</td>
+		<td><b contenteditable=true>Fred Goodwin (RBS)</td>
+	</tr>
+  </tbody>	
+ </table>  
+
+<p>Ready? Copy the HTML below and <a href='css/barchart.css' target='_blank'>use this CSS</a> in your files.
+<textarea></textarea> 
+<p>Sample data from <a href="http://www.economist.com/research/articlesBySubject/displaystory.cfm?subjectid=7933596&amp;story_id=16685706">The Economist</a>.
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.2.min.js"></script> 
+<script>  
+	var retextarea = function(elm) {
+		var code = $("table").clone();  		
+		$('b[contenteditable]', code).contents().unwrap(); 
+	 	$('.hide', code).remove();
+		elm.text("<table class='bar-chart'>" + code.html() + "</table>");  
+		return elm;
+	};
+
+	var numrows = 10;
+  $("#addbar").click(function() {                 
+			if($("table tbody tr").length < numrows) {
+	     $("<tr><td class=ratio-0><b contenteditable=true>0</b></td><td><b contenteditable=true>what it is</b><b class='delete'></b></td></tr>").appendTo("table");  				
+			}
+	});
+                              
+	
+  var barvals = [];
+
+	$('table td:even').each(function(){
+		 barvals.push({ val: $(this).text(), index: $(this).parent().index() });
+	});                     
+
+	$("body").append(retextarea($('textarea')));
+	  
+	var comparevals = function(a, b) {
+		return b.val - a.val;
+	};  
+
+	
+	barvals.sort(comparevals); 
+
+	$("table tbody tr td:last-child").append($('<b/>').addClass("delete").text(""));
+	
+	$("table").delegate("b.delete", "click", function() { 
+			var val = $(this).parent().prev().text(), breakkey;   
+			for(var key in barvals) {
+				 if(barvals[key].val == +val) {
+					breakkey = key;
+					break;
+				}
+			}                  			
+			barvals.splice(breakkey, 1); 
+ 			$.each(barvals, function(){ --this.index;});
+			$(this).parents("tr").empty().remove();
+			retextarea($("textarea"));	 
+	});
+	$("table").delegate("td:even b[contenteditable]", "focusout", function() {   
+		 var changedval = $(this).text();                                   
+		 if(parseInt(changedval)) {
+				var changedindex = $(this).parents("tr").index();
+				var barvalindex;                             
+				for(var key in barvals) {
+					if(barvals[key].index == changedindex) {
+						barvalindex = key;   
+						break;
+					}
+				}                                  
+				barvals[barvalindex].val = +changedval;                                	
+				 if(+changedval < barvals[0].val) {    
+					 $(this).parents("tr").removeClass().addClass("ratio-" + 
+					Math.round((+changedval / barvals[0].val)*10));
+				} else {   
+					 barvals.sort(comparevals);                                  
+					$("table tr").each(function() {					
+							$(this).removeClass().addClass("ratio-"+Math.round((+$(this).children("td:first-child").text() / barvals[0].val)*10));
+					});
+				} 
+				retextarea($("textarea"));	
+		}
+	});
+	$("table").delegate("td:odd b[contenteditable], th b[contenteditable]", "blur", function() {
+		   retextarea($("textarea"));
+	});                                         
+</script>          
+</body>
+</html>  

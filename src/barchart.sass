@@ -1,0 +1,87 @@
+@import "compass/css3"  
+
+$barheight: 25em
+$barwidth: 40em
+     
+=calculate-bar($ratio) 
+  td:first-child 
+    $value: $ratio*$barwidth 
+    width: $value 
+    background: rgba(0, 0, 0, $ratio)   
+          
+table.bar-chart 
+  width: $barwidth
+  height: $barheight
+  position: relative
+  display: block 
+  margin: 5em  auto 
+  text-align: left
+  th
+    position: absolute 
+    bottom: -2.4em
+    left: 0
+    width: 100%  
+    display: block
+    text-align: center
+    border-top: 1px solid #444   
+    white-space: nowrap
+
+    &:first-child
+      top: 0
+      left: 0
+      width: $barheight          
+      height: 1em       
+      border-top: 1px solid #444     
+      +rotate(90deg, 0, 0) 
+      
+  tbody, thead
+    display: block
+  tr  
+    display: block
+    margin: 0 0 0.25em 0
+    height: 2em  
+    line-height: 2em   
+    white-space: nowrap   
+    text-align: left
+    td
+      display: inline-block           
+      padding-left: 1em
+      width: auto
+      
+      &:first-child
+        color: white 
+        text-align: right
+        padding-right: 1em      
+    &.ratio-10        
+      +calculate-bar(1)   
+    &.ratio-9 
+      +calculate-bar(0.9)           
+    &.ratio-8        
+      +calculate-bar(0.8)            
+    &.ratio-7        
+      +calculate-bar(0.7)            
+
+    &.ratio-6                           
+      +calculate-bar(0.6) 
+        
+    &.ratio-5                          
+      +calculate-bar(0.5)  
+        
+    &.ratio-4                          
+      +calculate-bar(0.4) 
+        
+
+    &.ratio-3                          
+      +calculate-bar(0.3)         
+
+    &.ratio-2                         
+      +calculate-bar(0.2)
+        
+    
+    &.ratio-1                          
+      +calculate-bar(0.1)   
+
+@media print
+  .bar-chart
+    tr td:first-child
+      border: 1px solid black

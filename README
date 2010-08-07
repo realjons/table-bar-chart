@@ -1,0 +1,8 @@
+TABULAR BAR CHART
+
+A so-called "app" that lets you edit the values of a bar chart and copy the generated HTML/CSS to create your own bar-chart instantly!
+
+NOTE: It does not work on IE9 because apparently you cannot style tables as anything other than tables in IE9 Preview 4 "by design" http://is.gd/e6TeP    
+
+So, feature-detect and render the chart to modern browsers, and render the table to relics!
+
